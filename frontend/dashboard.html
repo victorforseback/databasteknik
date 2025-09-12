@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SoundVault – Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen p-8">
+  <h1 class="text-2xl font-bold text-center mb-6">Welcome to SoundVault</h1>
+
+  <!-- Search bar -->
+  <div class="flex justify-center mb-6">
+    <input id="searchInput" placeholder="Search for albums..."
+           class="w-1/2 p-2 rounded text-black">
+    <button id="searchButton" class="ml-2 px-4 py-2 bg-green-600 rounded">Search</button>
+  </div>
+
+  <!-- Results container -->
+  <div id="searchResults" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+
+  <!-- Updated JS reference -->
+  <script src="dashboard.js"></script>
+</body>
+</html>

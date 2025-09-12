@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SoundVault – Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white flex items-center justify-center min-h-screen">
+  <div class="bg-gray-900 p-8 rounded shadow-md w-96">
+    <h1 class="text-2xl font-bold mb-6 text-center">SoundVault</h1>
+
+    <!-- Tabs -->
+    <div class="flex justify-around mb-6">
+      <button id="loginTab" class="text-green-400 font-bold">Login</button>
+      <button id="signupTab" class="text-gray-400">Signup</button>
+    </div>
+
+    <!-- Message -->
+    <p id="message" class="mt-4 text-center text-sm"></p>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-4">
+      <input id="loginUser" placeholder="Username"
+             class="w-full p-2 rounded text-black">
+      <input id="loginPassword" type="password" placeholder="Password"
+             class="w-full p-2 rounded text-black">
+      <button type="submit" class="w-full bg-blue-600 py-2 rounded">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signupForm" class="space-y-4 hidden">
+      <input id="signupUser" placeholder="Username"
+             class="w-full p-2 rounded text-black">
+      <input id="signupPassword" type="password" placeholder="Password"
+             class="w-full p-2 rounded text-black">
+      <button type="submit" class="w-full bg-green-600 py-2 rounded">Sign Up</button>
+    </form>
+  </div>
+
+  <!-- Single JS file -->
+  <script src="script.js"></script>
+</body>
+</html>

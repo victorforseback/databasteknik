@@ -10,34 +10,94 @@
     <h1 class="text-2xl font-bold mb-6 text-center">SoundVault</h1>
 
     <!-- Tabs -->
-    <div class="flex justify-around mb-6">
-      <button id="loginTab" class="text-green-400 font-bold">Login</button>
-      <button id="signupTab" class="text-gray-400">Signup</button>
+    <div class="flex justify-center mb-6">
+      <button id="loginTab" class="px-4 py-2 border-b-2 border-green-600">Login</button>
+      <button id="signupTab" class="px-4 py-2 border-b-2 border-transparent text-gray-400">Sign Up</button>
     </div>
-
-    <!-- Message -->
-    <p id="message" class="mt-4 text-center text-sm"></p>
 
     <!-- Login Form -->
     <form id="loginForm" class="space-y-4">
-      <input id="loginUser" placeholder="Username"
-             class="w-full p-2 rounded text-black">
+      <input id="loginUsername" placeholder="Username"
+             class="w-full p-2 rounded text-black" required>
       <input id="loginPassword" type="password" placeholder="Password"
-             class="w-full p-2 rounded text-black">
+             class="w-full p-2 rounded text-black" required>
       <button type="submit" class="w-full bg-blue-600 py-2 rounded">Login</button>
     </form>
 
     <!-- Signup Form -->
     <form id="signupForm" class="space-y-4 hidden">
-      <input id="signupUser" placeholder="Username"
-             class="w-full p-2 rounded text-black">
+      <input id="signupUsername" placeholder="Username"
+             class="w-full p-2 rounded text-black" required>
       <input id="signupPassword" type="password" placeholder="Password"
-             class="w-full p-2 rounded text-black">
+             class="w-full p-2 rounded text-black" required>
       <button type="submit" class="w-full bg-green-600 py-2 rounded">Sign Up</button>
     </form>
   </div>
 
-  <!-- Single JS file -->
-  <script src="script.js"></script>
+  <script>
+    const loginTab = document.getElementById("loginTab");
+    const signupTab = document.getElementById("signupTab");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+
+    // Tab switching
+    loginTab.addEventListener("click", () => {
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
+      loginTab.classList.add("border-green-600", "text-white");
+      signupTab.classList.remove("border-green-600", "text-white");
+      signupTab.classList.add("border-transparent", "text-gray-400");
+    });
+
+    signupTab.addEventListener("click", () => {
+      signupForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+      signupTab.classList.add("border-green-600", "text-white");
+      loginTab.classList.remove("border-green-600", "text-white");
+      loginTab.classList.add("border-transparent", "text-gray-400");
+    });
+
+    // Signup
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user_name = document.getElementById("signupUsername").value;
+      const password = document.getElementById("signupPassword").value;
+
+      const res = await fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_name, password })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "dashboard.html";
+      } else {
+        alert(data.message || "Signup failed");
+      }
+    });
+
+    // Login
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user_name = document.getElementById("loginUsername").value;
+      const password = document.getElementById("loginPassword").value;
+
+      const res = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_name, password })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        localStorage.setItem("user", JSON.stringify(data.user));
+        window.location.href = "dashboard.html";
+      } else {
+        alert(data.message || "Login failed");
+      }
+    });
+  </script>
 </body>
 </html>

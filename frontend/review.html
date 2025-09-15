@@ -2,25 +2,105 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SoundVault – Album Review</title>
+  <title>SoundVault – Album</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-black text-white p-8">
-  <div id="albumInfo" class="mb-6"></div>
+<body class="bg-black text-white min-h-screen p-6">
+  <div id="albumDetails" class="mb-8"></div>
 
-  <!-- Review Form -->
-  <form id="reviewForm" class="mb-6 space-y-2">
-    <label class="block">Your Rating:</label>
-    <div id="ratingStars" class="flex space-x-1"></div>
+  <h2 class="text-2xl font-bold mb-4">Reviews</h2>
+  <div id="reviews" class="space-y-4 mb-6"></div>
+
+  <h3 class="text-xl font-bold mb-2">Leave a Review</h3>
+  <form id="reviewForm" class="space-y-2">
+    <input type="number" id="rating" min="1" max="10" required
+           class="w-20 p-2 text-black rounded" placeholder="1-10">
     <textarea id="reviewText" placeholder="Write your review..."
-              class="w-full p-2 rounded text-black"></textarea>
-    <button type="submit" class="bg-green-600 px-4 py-2 rounded">Submit Review</button>
+              class="w-full p-2 text-black rounded"></textarea>
+    <button type="submit" class="bg-green-600 px-4 py-2 rounded hover:bg-green-500">
+      Submit
+    </button>
   </form>
 
-  <!-- All reviews -->
-  <div id="reviewsList"></div>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const mbid = params.get("id");
 
-  <!-- Separate review script -->
-  <script src="review.js"></script>
+    // Load album info
+    async function loadAlbum() {
+      const res = await fetch(`http://localhost:3000/albums/${mbid}`);
+      const data = await res.json();
+
+      if (!data.success) {
+        document.getElementById("albumDetails").innerHTML = "<p>Album not found.</p>";
+        return;
+      }
+
+      const album = data.album;
+      document.getElementById("albumDetails").innerHTML = `
+        <div class="flex items-start gap-6">
+          <img src="${album.cover_url || ""}" alt="cover"
+               class="w-48 h-48 object-cover rounded bg-gray-700">
+          <div>
+            <h1 class="text-3xl font-bold">${album.title}</h1>
+            <p class="text-lg text-gray-400">${album.artist}</p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Load reviews
+    async function loadReviews() {
+      const res = await fetch(`http://localhost:3000/reviews/${mbid}`);
+      const data = await res.json();
+      const reviewsDiv = document.getElementById("reviews");
+      reviewsDiv.innerHTML = "";
+
+      if (data.success && data.reviews.length > 0) {
+        data.reviews.forEach(r => {
+          reviewsDiv.innerHTML += `
+            <div class="bg-gray-900 p-4 rounded">
+              <p class="font-bold">${r.user_name} – ${r.rating}/10</p>
+              <p>${r.review_text || ""}</p>
+            </div>
+          `;
+        });
+      } else {
+        reviewsDiv.innerHTML = "<p>No reviews yet. Be the first!</p>";
+      }
+    }
+
+    // Submit review
+    document.getElementById("reviewForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const rating = document.getElementById("rating").value;
+      const reviewText = document.getElementById("reviewText").value;
+
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (!user) {
+        alert("You must be logged in to leave a review!");
+        return;
+      }
+
+      const res = await fetch("http://localhost:3000/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user.id,
+          song_mbid: mbid,
+          rating,
+          review_text: reviewText
+        })
+      });
+
+      if (res.ok) {
+        loadReviews();
+        document.getElementById("reviewForm").reset();
+      }
+    });
+
+    loadAlbum();
+    loadReviews();
+  </script>
 </body>
 </html>

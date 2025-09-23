@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SoundVault Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen flex flex-col items-center justify-center">
+  <h1 class="text-4xl font-bold mb-6">Welcome to SoundVault</h1>
+
+  <!-- Search form -->
+  <form id="searchForm" class="flex w-full max-w-lg">
+    <input id="searchInput" type="text"
+           placeholder="Search for albums..."
+           class="flex-grow p-3 rounded-l text-black" required>
+    <button type="submit"
+            class="bg-green-600 px-6 rounded-r hover:bg-green-500">Search</button>
+  </form>
+
+  <script>
+    document.getElementById("searchForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const query = document.getElementById("searchInput").value.trim();
+      if (!query) return;
+      window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+    });
+  </script>
+</body>
+</html>

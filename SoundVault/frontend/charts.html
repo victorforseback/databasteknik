@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Top 100 Albums</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-black text-white min-h-screen p-6">
+  <h1 class="text-2xl font-bold mb-4">Top 100 Albums (User Ratings)</h1>
+  <div id="chartsContainer" class="grid grid-cols-6 gap-4"></div>
+
+  <script>
+    async function loadCharts() {
+      const res = await fetch("http://localhost:3000/charts");
+      const data = await res.json();
+
+      if (data.success) {
+        const container = document.getElementById("chartsContainer");
+        container.innerHTML = "";
+
+        data.albums.forEach(album => {
+          container.innerHTML += `
+            <a href="review.html?id=${album.album_mbid}" 
+               class="bg-gray-900 rounded-lg p-2 hover:bg-gray-800">
+              <div class="w-full aspect-square bg-gray-700 flex items-center justify-center rounded">
+                ${album.cover_url 
+                  ? `<img src="${album.cover_url}" class="w-full h-full object-cover rounded">`
+                  : `<span class="text-gray-500">No Cover</span>`}
+              </div>
+              <div class="mt-2">
+                <p class="font-bold truncate">${album.title}</p>
+                <p class="text-sm text-gray-400 truncate">${album.artist}</p>
+                <p class="text-sm text-yellow-400">⭐ ${album.avg_rating} (${album.review_count})</p>
+              </div>
+            </a>
+          `;
+        });
+      } else {
+        document.getElementById("chartsContainer").innerHTML =
+          "<p class='text-red-400'>Failed to load charts.</p>";
+      }
+    }
+
+    loadCharts();
+  </script>
+</body>
+</html>
